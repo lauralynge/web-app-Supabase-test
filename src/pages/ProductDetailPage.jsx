@@ -1,5 +1,9 @@
 import { useParams, useNavigate, Link } from "react-router";
 
+// TODO: Gem env-værdier i variabler, fx:
+const URL = import.meta.env.VITE_SUPABASE_URL;
+const APIKEY = import.meta.env.VITE_SUPABASE_APIKEY;
+
 export default function ProductDetailPage() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -14,6 +18,13 @@ export default function ProductDetailPage() {
     const confirmed = window.confirm("Delete this product?");
     if (confirmed) {
       // TODO (Trin 5): Implementer DELETE med fetch til `${URL}?id=eq.${id}`.
+      await fetch(`${URL}?id=eq.${id}`, {
+        method: "DELETE",
+        headers: {
+          apikey: APIKEY,
+          "Content-Type": "application/json",
+        },
+      });
       navigate("/");
     }
   }
