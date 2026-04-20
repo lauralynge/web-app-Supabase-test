@@ -1,6 +1,10 @@
 import { useParams, useNavigate } from "react-router";
 import ProductForm from "../components/ProductForm";
 
+// TODO: Gem env-værdier i variabler, fx:
+const URL = import.meta.env.VITE_SUPABASE_URL;
+const APIKEY = import.meta.env.VITE_SUPABASE_APIKEY;
+
 export default function UpdatePage() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -13,7 +17,16 @@ export default function UpdatePage() {
 
   async function handleSubmit(productData) {
     console.log("UpdatePage productData:", productData);
-    // TODO (Trin 4): Implementer PATCH med fetch til `${URL}?id=eq.${id}`.
+
+    await fetch(`${URL}?id=eq.${id}`, {
+      method: "PATCH",
+      headers: {
+        apikey: APIKEY,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(productData),
+    });
+
     navigate(`/products/${id}`);
   }
 

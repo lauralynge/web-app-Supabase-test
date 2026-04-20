@@ -1,27 +1,42 @@
+import { useEffect, useState } from "react";
 import ProductCard from "../components/ProductCard";
 
-const starterProducts = [
-  {
-    id: "starter-1",
-    title: "Starter Product",
-    price: 0,
-    image: "",
-  },
-];
+// TODO (Trin 1): Gem env-værdier i variabler, fx:
+const URL = import.meta.env.VITE_SUPABASE_URL;
+const APIKEY = import.meta.env.VITE_SUPABASE_APIKEY;
 
 export default function HomePage() {
-  // TODO (Trin 1): Gem env-værdier i variabler, fx:
-  // const URL = import.meta.env.VITE_SUPABASE_URL;
-  // const APIKEY = import.meta.env.VITE_SUPABASE_APIKEY;
+  const [products, setProducts] = useState([]);
+
   // TODO (Trin 2): Implementer GET i HomePage med useEffect/useState og fetch.
-  const products = starterProducts;
+  useEffect(() => {
+    console.log("VITE_SUPABASE_URL:", URL);
+    console.log("VITE_SUPABASE_APIKEY:", APIKEY);
+
+    async function getProducts() {
+      try {
+        // await response.json() konverterer svaret til JavaScript-data, som kan gemmes i state.
+        const response = await fetch(URL, {
+          // URL er endpointet (hvor requesten sendes hen)
+          headers: {
+            apikey: APIKEY, // apikey i headers giver adgang til Supabase Data API.
+            "Content-Type": "application/json",
+          },
+        });
+
+        const data = await response.json();
+        setProducts(data);
+      } catch (error) {
+        console.error("Fejl i GET:", error);
+      }
+    }
+
+    getProducts();
+  }, []);
 
   return (
     <main className="app">
       <h1 className="page-title">All Products</h1>
-      <p className="status-msg">
-        TODO: Implement GET products with fetch and replace starter data.
-      </p>
       <section className="product-list">
         {products.map((product) => (
           <ProductCard key={product.id} product={product} />
